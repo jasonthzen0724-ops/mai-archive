@@ -1,4 +1,4 @@
-// 1. 譜面資料庫 (包含你的 YouTube 譜面影片)
+// 1. 譜面資料庫 (包含 YouTube 預覽影片)
 const charts = [
   {
     id: "melodiniq",
