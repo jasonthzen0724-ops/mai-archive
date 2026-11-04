@@ -1,90 +1,61 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0d1117">
-  <meta name="description" content="maimai 自製譜面展示與分享平台">
   <title>MAI ARCHIVE｜自製譜面庫</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* 補強備用樣式 */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999;
+    }
+    .modal-content {
+      background: #151e2a; padding: 20px; border-radius: 12px;
+      max-width: 600px; width: 90%; color: #fff; border: 1px solid #00f0ff;
+    }
+  </style>
 </head>
-<body>
-  <div class="ambient ambient-pink"></div><div class="ambient ambient-blue"></div>
-  
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="MAI ARCHIVE 首頁">
-      <span class="brand-mark">M</span>
-      <span><strong>MAI<span class="brand-accent">ARCHIVE</span></strong><small>自製譜面資料庫</small></span>
-    </a>
-    <nav><a class="nav-link active" href="#library">譜面庫</a><a class="nav-link" href="#about">關於本站</a></nav>
-    <a class="header-cta" href="#library">探索譜面 <span>↗</span></a>
+<body style="background: #0b0f17; color: #fff; font-family: sans-serif; padding: 20px;">
+
+  <header style="max-width: 1000px; margin: 0 auto 30px;">
+    <h1 style="color: #00f0ff; margin-bottom: 5px;">M MAI ARCHIVE</h1>
+    <p style="color: #8995a6; margin: 0;">自製譜面資料庫 (收錄譜面: <span id="result-count">01</span> / <span id="stat-total">01</span>)</p>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <div class="eyebrow"><span class="live-dot"></span> COMMUNITY CHART ARCHIVE</div>
-        <h1>你的下一張<br><span>挑戰譜面</span>，在這裡。</h1>
-        <p>收藏、探索與分享玩家創作的 maimai 自製譜面。<br>讓每一份創意，都能被看見。</p>
-        <a class="hero-button" href="#library">開始探索 <span>↓</span></a>
-      </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-        <div class="disc"><div class="disc-inner"><span>maimai</span><b>ARCHIVE</b><i>✦</i></div></div>
-        <div class="float-tag tag-top">CUSTOM CHARTS <b>✦</b></div>
-        <div class="float-tag tag-bottom"><span class="equalizer"><i></i><i></i><i></i><i></i><i></i></span> PLAY YOUR WAY</div>
-      </div>
-      <div class="hero-bottom"><span>SCROLL TO DISCOVER</span><span class="hero-line"></span><span>01 / 01</span></div>
-    </section>
-
-    <section class="stats" aria-label="譜面庫統計">
-      <div><strong id="stat-total">01</strong><span>收錄譜面</span></div>
-      <div><strong>05</strong><span>難度分類</span></div>
-      <div><strong>∞</strong><span>創作可能</span></div>
-      <div class="stats-note">MADE BY PLAYERS,<br><em>FOR PLAYERS.</em></div>
-    </section>
-
-    <section class="library-section" id="library">
-      <div class="section-heading">
-        <div><div class="eyebrow">THE COLLECTION / 001</div><h2>譜面<span>資料庫</span></h2><p>找到適合你的下一個挑戰。</p></div>
-        <div class="result-count"><span id="result-count">01</span> CHARTS FOUND</div>
-      </div>
-
-      <div class="toolbar">
-        <label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="搜尋曲名、曲師或譜師..." autocomplete="off"><kbd>⌘ K</kbd></label>
-        <label class="select-wrap"><span>難度</span><select id="difficulty-filter"><option value="all">全部難度</option><option>Basic</option><option>Advanced</option><option>Expert</option><option>Master</option><option>Re:MASTER</option></select></label>
-        <label class="select-wrap"><span>排序</span><select id="sort-select"><option value="default">預設排序</option><option value="level-desc">等級：高至低</option><option value="level-asc">等級：低至高</option><option value="title">曲名：A–Z</option></select></label>
-      </div>
-
-      <div class="difficulty-legend">
-        <span><i class="dot basic"></i>BASIC</span><span><i class="dot advanced"></i>ADVANCED</span><span><i class="dot expert"></i>EXPERT</span><span><i class="dot master"></i>MASTER</span><span><i class="dot remaster"></i>RE:MASTER</span>
-      </div>
-
-      <div class="chart-grid" id="chart-grid"></div>
-      <div class="empty-state" id="empty-state" hidden><div>⌕</div><h3>找不到符合條件的譜面</h3><p>試視其他關鍵字或調整難度篩選。</p><button id="reset-button">清除篩選</button></div>
-    </section>
-
-    <section class="submit-banner" id="about">
-      <div><div class="eyebrow">CREATE · SHARE · PLAY</div><h2>有好譜面？<br><span>讓更多人玩到。</span></h2><p>持續收錄玩家創作，讓自製譜面文化更加豐富。</p></div>
-      <div class="submit-side"><div class="submit-symbol">＋</div><span>YOUR CHART<br>COULD BE HERE</span><a href="mailto:charts@example.com">聯絡本站 <b>↗</b></a></div>
-    </section>
+  <main style="max-width: 1000px; margin: 0 auto;">
+    <!-- 卡片渲染容器 (關鍵!) -->
+    <div id="chart-grid" class="chart-grid"></div>
+    <div id="empty-state" hidden style="text-align: center; padding: 40px; color: #888;">查無符合條件的譜面</div>
   </main>
 
-  <footer><a class="brand footer-brand" href="#"><span class="brand-mark">M</span><span><strong>MAI<span class="brand-accent">ARCHIVE</span></strong><small>自製譜面資料庫</small></span></a><span>UNOFFICIAL FAN-MADE PROJECT</span><span>© 2026 MAI ARCHIVE</span></footer>
-
-  <div class="modal-backdrop" id="detail-modal" hidden>
-    <article class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <button class="modal-close" id="modal-close" aria-label="關閉">×</button>
-      <div class="modal-cover" id="modal-cover">
-        <!-- JS 會動態將 <video> 播放器替換至此 -->
+  <!-- 詳情與影片彈窗 Modal -->
+  <div id="detail-modal" class="modal-backdrop" hidden>
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h2 id="modal-title" style="margin: 0; font-size: 20px; color: #00f0ff;">-</h2>
+        <button id="modal-close" style="background: transparent; border: none; color: #fff; font-size: 24px; cursor: pointer;">&times;</button>
       </div>
-      <div class="modal-content">
-        <div class="eyebrow">CHART DETAILS</div>
-        <h2 id="modal-title"></h2>
-        <p id="modal-artist"></p>
-        <div class="modal-meta" id="modal-meta"></div>
-        <div class="modal-actions">
-          <a id="download-link" class="hero-button" href="#" download
+      <p id="modal-artist" style="color: #8995a6; margin-bottom: 15px;">-</p>
+      
+      <div id="modal-cover" style="margin-bottom: 15px; text-align: center;"></div>
+      <div id="modal-meta" style="margin-bottom: 20px;"></div>
+      
+      <a id="download-link" href="#" download style="display: block; text-align: center; padding: 12px; background: #00f0ff; color: #000; text-decoration: none; border-radius: 6px; font-weight: bold;">下載 ZIP 譜面包</a>
+    </div>
+  </div>
+
+  <!-- 正確引入 app.js (修正檔名問題) -->
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
