@@ -1,4 +1,4 @@
-// 1. 譜面資料庫 (已設定 YouTube 嵌入)
+// 1. 譜面資料庫 (包含你的 YouTube 譜面影片)
 const charts = [
   {
     id: "melodiniq",
@@ -13,7 +13,7 @@ const charts = [
   }
 ];
 
-// 2. 渲染卡片邏輯 (支援大小寫相容)
+// 2. 渲染邏輯
 function renderCharts(data) {
   const chartGrid = document.getElementById("chart-grid");
   const resultCount = document.getElementById("result-count");
@@ -38,18 +38,18 @@ function renderCharts(data) {
 
     const card = document.createElement("article");
     card.className = "chart-card";
-    card.style.cssText = "background: #151e2a; border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 12px; overflow: hidden; margin-top: 20px;";
+    card.style.cssText = "background: #151e2a; border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 12px; overflow: hidden;";
 
     card.innerHTML = `
-      <div class="card-cover" style="height: 180px; background-image: url('${coverPath}'), linear-gradient(135deg, #00f0ff33, #111721); background-size: cover; background-position: center; position: relative;">
-        <span class="diff-badge" style="position: absolute; top: 12px; right: 12px; padding: 4px 10px; border-radius: 4px; font-weight: bold; background: #bb73ff; color: #fff; font-size: 12px;">
+      <div class="card-cover" style="height: 160px; background-image: url('${coverPath}'), linear-gradient(135deg, #00f0ff33, #111721); background-size: cover; background-position: center; position: relative;">
+        <span style="position: absolute; top: 10px; right: 10px; padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #bb73ff; color: #fff; font-size: 12px;">
           ${chart.difficulty.toUpperCase()} ${chart.level}
         </span>
       </div>
-      <div class="card-body" style="padding: 18px; color: #fff;">
-        <h3 style="margin: 0 0 6px; font-size: 18px; color: #fff;">${chart.title}</h3>
+      <div style="padding: 16px;">
+        <h3 style="margin: 0 0 5px; font-size: 18px; color: #fff;">${chart.title}</h3>
         <p style="margin: 0 0 12px; font-size: 13px; color: #8995a6;">${chart.artist}</p>
-        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #8592a3; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #8592a3; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-bottom: 12px;">
           <span>BPM: ${chart.bpm}</span>
           <span>譜師: ${chart.designer}</span>
         </div>
@@ -62,7 +62,7 @@ function renderCharts(data) {
   });
 }
 
-// 3. Modal 彈窗與 YouTube 影片嵌入
+// 3. Modal 彈窗與 YouTube 影片播放
 window.openModal = function (id) {
   const chart = charts.find((c) => c.id === id);
   if (!chart) return;
@@ -101,7 +101,7 @@ window.openModal = function (id) {
   if (detailModal) detailModal.hidden = false;
 };
 
-// 初始化
+// 頁面初始化
 document.addEventListener("DOMContentLoaded", () => {
   const modalClose = document.getElementById("modal-close");
   const detailModal = document.getElementById("detail-modal");
@@ -114,6 +114,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 預設直接渲染所有資料
   renderCharts(charts);
 });
