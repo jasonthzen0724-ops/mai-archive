@@ -7,64 +7,108 @@
   <style>
     * { box-sizing: border-box; }
     body { background: #0b0f17; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 30px 20px; }
-    header { max-width: 1000px; margin: 0 auto 30px; border-bottom: 1px solid rgba(0, 240, 255, 0.2); padding-bottom: 20px; }
-    h1 { color: #00f0ff; margin: 0 0 10px; font-size: 28px; letter-spacing: 1px; }
+    
+    header { max-width: 1000px; margin: 0 auto 25px; border-bottom: 1px solid rgba(0, 240, 255, 0.2); padding-bottom: 20px; }
+    h1 { color: #00f0ff; margin: 0 0 8px; font-size: 28px; letter-spacing: 1px; }
     p.subtitle { color: #8995a6; margin: 0; font-size: 14px; }
-    main { max-width: 1000px; margin: 0 auto; }
-    
-    /* 關鍵：強制顯示的卡片網格 */
+
+    /* 搜尋與篩選列 */
+    .filter-bar {
+      max-width: 1000px; margin: 0 auto 25px; display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .search-input, .select-input {
+      background: #151e2a; border: 1px solid rgba(0, 240, 255, 0.3); color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 14px;
+    }
+    .search-input { flex: 1; min-width: 200px; }
+    .search-input:focus, .select-input:focus { outline: none; border-color: #00f0ff; }
+
+    /* 譜面卡片網格 */
     .chart-grid {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
     }
+    .chart-card {
+      background: #151e2a; border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 12px; overflow: hidden;
+      cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+    }
+    .chart-card:hover { transform: translateY(-4px); border-color: #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
+
+    /* 詳細資訊新頁面 */
+    .detail-page {
+      max-width: 800px; margin: 0 auto; background: #151e2a; border: 1px solid #00f0ff; border-radius: 12px; padding: 30px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
+    }
+    .back-btn {
+      display: inline-block; background: transparent; border: 1px solid #8995a6; color: #8995a6; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; text-decoration: none; font-size: 14px;
+    }
+    .back-btn:hover { color: #fff; border-color: #fff; }
     
-    /* Modal 彈窗樣式 */
-    .modal-backdrop {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 99999;
+    .btn-group { display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
+    .action-btn {
+      flex: 1; min-width: 200px; text-align: center; padding: 14px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; cursor: pointer; font-size: 15px; transition: 0.2s;
     }
-    .modal-content {
-      background: #151e2a; padding: 24px; border-radius: 12px;
-      max-width: 600px; width: 90%; color: #fff; border: 1px solid #00f0ff;
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-    }
+    .btn-watch { background: rgba(0, 240, 255, 0.15); color: #00f0ff; border: 1px solid #00f0ff; }
+    .btn-watch:hover { background: #00f0ff; color: #000; }
+    .btn-download { background: #bb73ff; color: #fff; border: 1px solid #bb73ff; }
+    .btn-download:hover { background: #9d4edd; }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>M MAI ARCHIVE</h1>
-    <p class="subtitle">自製譜面資料庫 (收錄譜面: <span id="result-count">01</span> / <span id="stat-total">01</span>)</p>
-  </header>
+  <!-- 主頁面：列表檢視 -->
+  <div id="home-view">
+    <header>
+      <h1>M MAI ARCHIVE</h1>
+      <p class="subtitle">自製譜面資料庫 (收錄譜面: <span id="result-count">01</span> / <span id="stat-total">01</span>)</p>
+    </header>
 
-  <main>
-    <!-- 卡片容器 -->
-    <div id="chart-grid" class="chart-grid"></div>
-    <div id="empty-state" hidden style="text-align: center; padding: 40px; color: #888;">查無符合條件的譜面</div>
-  </main>
-
-  <!-- 影片預覽 Modal 彈窗 -->
-  <div id="detail-modal" class="modal-backdrop" hidden>
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h2 id="modal-title" style="margin: 0; font-size: 20px; color: #00f0ff;">-</h2>
-        <button id="modal-close" style="background: transparent; border: none; color: #fff; font-size: 24px; cursor: pointer;">&times;</button>
+    <main style="max-width: 1000px; margin: 0 auto;">
+      <!-- 搜尋與篩選器 -->
+      <div class="filter-bar">
+        <input type="text" id="search-input" class="search-input" placeholder="搜尋曲名、曲師或譜師...">
+        <select id="diff-select" class="select-input">
+          <option value="ALL">全部難度</option>
+          <option value="Master">Master</option>
+          <option value="Re:Master">Re:Master</option>
+          <option value="Expert">Expert</option>
+        </select>
       </div>
-      <p id="modal-artist" style="color: #8995a6; margin-bottom: 15px;">-</p>
+
+      <div id="chart-grid" class="chart-grid"></div>
+      <div id="empty-state" hidden style="text-align: center; padding: 40px; color: #888;">查無符合條件的譜面</div>
+    </main>
+  </div>
+
+  <!-- 獨立頁面：譜面詳細資訊檢視 -->
+  <div id="detail-view" style="display: none;">
+    <div class="detail-page">
+      <button class="back-btn" onclick="showHome()">← 返回譜面列表</button>
       
-      <!-- YouTube 影片播放區 -->
-      <div id="modal-cover" style="margin-bottom: 15px; text-align: center;"></div>
-      <div id="modal-meta" style="margin-bottom: 20px;"></div>
-      
-      <a id="download-link" href="#" download style="display: block; text-align: center; padding: 12px; background: #00f0ff; color: #000; text-decoration: none; border-radius: 6px; font-weight: bold;">下載 ZIP 譜面包</a>
+      <div id="detail-cover-container" style="height: 240px; border-radius: 8px; background-size: cover; background-position: center; margin-bottom: 20px; position: relative;">
+        <span id="detail-badge" style="position: absolute; top: 15px; right: 15px; padding: 6px 12px; border-radius: 4px; font-weight: bold; background: #bb73ff; color: #fff; font-size: 14px;"></span>
+      </div>
+
+      <h1 id="detail-title" style="margin: 0 0 8px; color: #00f0ff;">-</h1>
+      <p id="detail-artist" style="color: #8995a6; font-size: 16px; margin: 0 0 20px;">-</p>
+
+      <div style="background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; color: #ccc;">
+        <div>BPM：<span id="detail-bpm" style="color: #fff;">-</span></div>
+        <div>譜師名義：<span id="detail-designer" style="color: #fff;">-</span></div>
+        <div>難度分類：<span id="detail-diff" style="color: #fff;">-</span></div>
+        <div>等級：<span id="detail-level" style="color: #fff;">-</span></div>
+      </div>
+
+      <!-- 嵌入可預覽影片容器 (預設隱藏，點擊按鈕開關) -->
+      <div id="video-embed-container" style="margin-top: 20px; display: none;">
+        <iframe id="video-iframe" style="width: 100%; height: 360px; border: 0; border-radius: 8px;" allowfullscreen></iframe>
+      </div>
+
+      <!-- 兩大關鍵點擊按鈕 -->
+      <div class="btn-group">
+        <a id="watch-video-btn" href="javascript:void(0)" onclick="toggleVideoEmbed()" class="action-btn btn-watch">▶ 觀看完整影片</a>
+        <a id="download-zip-btn" href="#" download class="action-btn btn-download">⬇ 下載整個 ZIP 譜面包</a>
+      </div>
     </div>
   </div>
 
-  <!-- 引入 app.js -->
   <script src="assets/js/app.js"></script>
 </body>
 </html>
