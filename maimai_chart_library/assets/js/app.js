@@ -1,4 +1,4 @@
-// 1. 譜面資料庫 (包含 YouTube 預覽影片)
+// 1. 譜面資料庫 (已綁定 YouTube 影片與相對背景路徑)
 const charts = [
   {
     id: "melodiniq",
@@ -13,7 +13,7 @@ const charts = [
   }
 ];
 
-// 2. 渲染邏輯
+// 2. 卡片渲染邏輯 (帶有獨立強制顯示樣式)
 function renderCharts(data) {
   const chartGrid = document.getElementById("chart-grid");
   const resultCount = document.getElementById("result-count");
@@ -37,18 +37,19 @@ function renderCharts(data) {
     const coverPath = `${baseFolder}bg.png`;
 
     const card = document.createElement("article");
-    card.className = "chart-card";
-    card.style.cssText = "background: #151e2a; border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 12px; overflow: hidden;";
+    card.style.cssText = "background: #151e2a; border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; width: 100%;";
 
     card.innerHTML = `
-      <div class="card-cover" style="height: 160px; background-image: url('${coverPath}'), linear-gradient(135deg, #00f0ff33, #111721); background-size: cover; background-position: center; position: relative;">
+      <div style="height: 160px; background-image: url('${coverPath}'), linear-gradient(135deg, #00f0ff33, #111721); background-size: cover; background-position: center; position: relative;">
         <span style="position: absolute; top: 10px; right: 10px; padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #bb73ff; color: #fff; font-size: 12px;">
           ${chart.difficulty.toUpperCase()} ${chart.level}
         </span>
       </div>
-      <div style="padding: 16px;">
-        <h3 style="margin: 0 0 5px; font-size: 18px; color: #fff;">${chart.title}</h3>
-        <p style="margin: 0 0 12px; font-size: 13px; color: #8995a6;">${chart.artist}</p>
+      <div style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+        <div>
+          <h3 style="margin: 0 0 5px; font-size: 18px; color: #fff;">${chart.title}</h3>
+          <p style="margin: 0 0 12px; font-size: 13px; color: #8995a6;">${chart.artist}</p>
+        </div>
         <div style="display: flex; justify-content: space-between; font-size: 12px; color: #8592a3; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-bottom: 12px;">
           <span>BPM: ${chart.bpm}</span>
           <span>譜師: ${chart.designer}</span>
@@ -114,5 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // 預設渲染
   renderCharts(charts);
 });
