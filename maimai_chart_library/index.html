@@ -129,7 +129,6 @@
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.35); 
     }
 
-    /* 🌟 封面圖片區域：高度提升至 190px (近 16:9 比例) */
     .card-cover {
       height: 190px; 
       background-size: cover; 
@@ -137,7 +136,6 @@
       position: relative;
     }
 
-    /* 🌟 文字資訊內容區：設定彈性排版與留白 */
     .card-body {
       padding: 16px;
       display: flex;
@@ -170,7 +168,6 @@
       padding-top: 10px;
     }
 
-    /* 譜師名稱單行超出省略 */
     .chart-designer-text {
       white-space: nowrap;
       overflow: hidden;
@@ -181,7 +178,7 @@
       color: #aebccf;
     }
 
-    /* 難度標籤動態色彩控制 */
+    /* 難度標籤樣式 */
     .badge-master {
       background: #bb73ff;
       color: #fff;
@@ -198,7 +195,7 @@
       color: #fff;
     }
 
-    /* 詳細資訊頁面 */
+    /* 詳細頁面：完整圖視與模糊底圖容器 */
     .detail-page {
       max-width: 800px; 
       margin: 0 auto; 
@@ -209,6 +206,59 @@
       box-shadow: 0 0 35px rgba(0, 240, 255, 0.3);
       backdrop-filter: blur(12px);
     }
+
+    /* 🌟 優化：詳細頁圖片完整展示區（模糊底圖 + 中央原圖顯示） */
+    .detail-cover-wrapper {
+      position: relative;
+      width: 100%;
+      min-height: 320px;
+      max-height: 460px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      background: #05080c;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 高斯模糊背景層 */
+    .detail-cover-bg {
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 120%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(20px) brightness(0.45);
+      z-index: 1;
+    }
+
+    /* 中央完整主圖 */
+    .detail-cover-img {
+      position: relative;
+      z-index: 2;
+      max-width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+      border-radius: 6px;
+    }
+
+    /* 右上角難度標籤 */
+    .detail-badge-tag {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 3;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
     .back-btn {
       display: inline-block; background: transparent; border: 1px solid #8995a6; color: #8995a6; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; text-decoration: none; font-size: 14px;
     }
@@ -266,8 +316,11 @@
     <div class="detail-page">
       <button class="back-btn" onclick="showHome()">← 返回譜面列表</button>
       
-      <div id="detail-cover-container" style="height: 280px; border-radius: 8px; background-size: cover; background-position: center; margin-bottom: 20px; position: relative;">
-        <span id="detail-badge" style="position: absolute; top: 15px; right: 15px; padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 14px;"></span>
+      <!-- 🌟 圖片完整顯示區（含模糊背景 + 中央整圖 + 右上難度標籤） -->
+      <div class="detail-cover-wrapper">
+        <div id="detail-cover-bg" class="detail-cover-bg"></div>
+        <img id="detail-cover-img" class="detail-cover-img" src="" alt="Song Cover">
+        <span id="detail-badge" class="detail-badge-tag"></span>
       </div>
 
       <h1 id="detail-title" style="margin: 0 0 8px; color: #00f0ff;">-</h1>
@@ -446,10 +499,12 @@
       document.getElementById("detail-level").textContent = chart.level;
       
       const badgeElem = document.getElementById("detail-badge");
-      badgeElem.className = badgeClass;
+      badgeElem.className = `detail-badge-tag ${badgeClass}`;
       badgeElem.textContent = `${chart.difficulty.toUpperCase()} ${chart.level}`;
 
-      document.getElementById("detail-cover-container").style.backgroundImage = `url('${coverPath}'), linear-gradient(135deg, #00f0ff33, #111721)`;
+      // 🌟 設定模糊背景與中央原圖
+      document.getElementById("detail-cover-bg").style.backgroundImage = `url('${coverPath}')`;
+      document.getElementById("detail-cover-img").src = coverPath;
       
       const downloadBtn = document.getElementById("download-zip-btn");
       downloadBtn.href = zipPath;
