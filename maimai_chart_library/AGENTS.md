@@ -7,7 +7,7 @@
 - **主題色系：** maimai 街機深色科技風（背景 `#0d1117`、霓虹粉 `#ff007f`、水藍 `#00f0ff`）。
 - **難度標籤顏色規範：**
   - BASIC: 綠色 (`#2ecc71`) | ADVANCED: 黃色 (`#f1c40f`) | EXPERT: 紅色 (`#e74c3c`)
-  - MASTER: 紫色 (`#9b59b6`) | Re:MASTER: 紅白相間 gradients
+  - MASTER: 紫色 (`#9b59b6`) | Re:MASTER: 白底黑字 gradients
 
 ## 3. 簡化檔案結構與自動推導規範 (One-Folder-Per-Chart)
 所有譜面資源統一放置於 `/charts/[song_id]/` 目錄下：
