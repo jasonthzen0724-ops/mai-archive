@@ -82,7 +82,7 @@
     }
     p.subtitle { color: #8995a6; margin: 0; font-size: 14px; }
 
-    /* 🌟 優化：搜尋與篩選列（縮短搜尋框，排成一列） */
+    /* 搜尋與篩選列：回復原本自由伸展的長度 */
     .filter-bar {
       max-width: 1000px; 
       margin: 0 auto 25px; 
@@ -99,13 +99,12 @@
       font-size: 14px;
       backdrop-filter: blur(8px);
     }
-    /* 搜尋框寬度適當縮短，兼顧手機與電腦版 */
+    /* 原本搜尋框會自動填滿剩餘長度 */
     .search-input { 
-      flex: 1 1 240px; 
-      max-width: 400px; 
+      flex: 1; 
+      min-width: 200px; 
     }
     .select-input {
-      flex: 0 0 130px;
       cursor: pointer;
     }
     .search-input:focus, .select-input:focus { outline: none; border-color: #00f0ff; box-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
@@ -192,11 +191,10 @@
     </header>
 
     <main style="max-width: 1000px; margin: 0 auto;">
-      <!-- 🌟 優化後的搜尋與篩選區塊 -->
       <div class="filter-bar">
         <input type="text" id="search-input" class="search-input" placeholder="搜尋曲名、曲師或譜師...">
         
-        <!-- 新增：等級選單 (13 ~ 15) -->
+        <!-- 等級選單 (13 ~ 15，已移除 15+) -->
         <select id="level-select" class="select-input">
           <option value="ALL">全部等級</option>
           <option value="13">13</option>
@@ -204,10 +202,9 @@
           <option value="14">14</option>
           <option value="14+">14+</option>
           <option value="15">15</option>
-          <option value="15+">15+</option>
         </select>
 
-        <!-- 原有：難度分類選單 -->
+        <!-- 難度分類選單 -->
         <select id="diff-select" class="select-input">
           <option value="ALL">全部難度</option>
           <option value="Master">Master</option>
@@ -327,7 +324,6 @@
       if (!chartGrid) return;
       chartGrid.innerHTML = "";
 
-      // 🌟 雙重連動篩選邏輯 (搜尋文字 + 等級 + 難度)
       const filtered = charts.filter(chart => {
         const matchesSearch = chart.title.toLowerCase().includes(searchInput) ||
                               chart.artist.toLowerCase().includes(searchInput) ||
