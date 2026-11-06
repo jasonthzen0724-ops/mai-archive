@@ -6,7 +6,15 @@
   <title>MAI ARCHIVE｜自製譜面庫</title>
   <style>
     * { box-sizing: border-box; }
-    
+    CSS
+    /* 卡片底部的文字溢出處理 */
+    .chart-designer-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px; /* 限制譜師名稱最大寬度 */
+      text-align: right;
+  }
     /* 1. maimai 主題背景：科技深色網格 + 霓虹漸層 */
     body { 
       background-color: #080b10; 
