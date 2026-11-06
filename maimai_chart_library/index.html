@@ -219,44 +219,59 @@
   </div>
 
   <script>
-    const charts = [
-      {
-        id: "melodiniq",
-        title: "Melodiniq",
-        artist: "onoken a.k.a. owl＊tree",
-        designer: "digitalgoorve & RL",
-        bpm: 193,
-        difficulty: "Master",
-        level: "14+",
-        folder: "chart/melodiniq/",
-        youtubeUrl: "https://www.youtube.com/embed/-ETn7R8KcjA",
-        zipName: "melodiniq.zip"
-      },
-      {
-        id: "spooky_badball_mas",
-        title: "SPOOKY BADBALL",
-        artist: "打打だいす",
-        designer: "RL",
-        bpm: 197,
-        difficulty: "Master",
-        level: "14",
-        folder: "chart/SPOOKY BADBALL/",
-        youtubeUrl: "https://www.youtube.com/embed/MMQ3PgfuKRY",
-        zipName: "SPOOKY BADBALL.zip"
-      },
-      {
-        id: "spooky_badball_remas",
-        title: "SPOOKY BADBALL",
-        artist: "打打だいす",
-        designer: "digitalgoorve",
-        bpm: 197,
-        difficulty: "Re:Master",
-        level: "14+",
-        folder: "chart/SPOOKY BADBALL/",
-        youtubeUrl: "https://www.youtube.com/embed/u0qnuCc2Vho",
-        zipName: "SPOOKY BADBALL.zip"
-      }
-    ];
+   const rawSongs = [
+    {
+      id: "melodiniq",
+      title: "Melodiniq",
+      artist: "onoken a.k.a. owl＊tree",
+      bpm: 193,
+      folder: "chart/melodiniq/",
+      zipName: "melodiniq.zip",
+      difficulties: [
+        { 
+          difficulty: "Master", 
+          level: "14+", 
+          designer: "digitalgoorve & RL",  // 🌟 這張譜的譜師
+          youtubeUrl: "https://www.youtube.com/embed/-ETn7R8KcjA" 
+        }
+      ]
+    },
+    {
+      id: "spooky_badball",
+      title: "SPOOKY BADBALL",
+      artist: "打打だいす",
+      bpm: 197,
+      folder: "chart/SPOOKY BADBALL/",
+      zipName: "SPOOKY BADBALL.zip",
+      difficulties: [
+        { 
+          difficulty: "Master", 
+          level: "14", 
+          designer: "RL",                // 🌟 Master 的譜師
+          youtubeUrl: "https://www.youtube.com/embed/MMQ3PgfuKRY" 
+        },
+        { 
+          difficulty: "Re:Master", 
+          level: "14+", 
+          designer: "digitalgoorve",     // 🌟 Re:Master 的譜師 (不同創作者)
+          youtubeUrl: "https://www.youtube.com/embed/u0qnuCc2Vho" 
+        }
+      ]
+    }
+  ];
+
+  // 2. 自動展開成獨立卡片陣列（完全相容網頁顯示與點擊）
+  const charts = rawSongs.flatMap(song => 
+    song.difficulties.map((diff, index) => ({
+      id: `${song.id}_${diff.difficulty.toLowerCase().replace(/[^a-z0-9]/g, '')}_${index}`,
+      title: song.title,
+      artist: song.artist,
+      bpm: song.bpm,
+      folder: song.folder,
+      zipName: song.zipName,
+      ...diff
+    }))
+  );
 
     let currentChart = null;
 
