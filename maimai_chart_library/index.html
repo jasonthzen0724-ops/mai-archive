@@ -6,15 +6,8 @@
   <title>MAI ARCHIVE｜自製譜面庫</title>
   <style>
     * { box-sizing: border-box; }
-    /* 卡片底部的文字溢出處理 */
-    .chart-designer-text {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 160px; /* 限制譜師名稱最大寬度 */
-      text-align: right;
-  }
-    /* 1. maimai 主題背景：科技深色網格 + 霓虹漸層 */
+    
+    /* maimai 主題背景 */
     body { 
       background-color: #080b10; 
       background-image: 
@@ -32,7 +25,7 @@
       overflow-x: hidden;
     }
 
-    /* 2. 動態 maimai 圓環（外光環旋轉動畫） */
+    /* 動態 maimai 雙光環 */
     body::before {
       content: "";
       position: fixed;
@@ -48,7 +41,6 @@
       animation: rotateRing 40s linear infinite;
     }
 
-    /* 3. 動態內光環（逆向旋轉粉色霓虹） */
     body::after {
       content: "";
       position: fixed;
@@ -90,9 +82,13 @@
     }
     p.subtitle { color: #8995a6; margin: 0; font-size: 14px; }
 
-    /* 搜尋與篩選列 */
+    /* 🌟 優化：搜尋與篩選列（縮短搜尋框，排成一列） */
     .filter-bar {
-      max-width: 1000px; margin: 0 auto 25px; display: flex; gap: 12px; flex-wrap: wrap;
+      max-width: 1000px; 
+      margin: 0 auto 25px; 
+      display: flex; 
+      gap: 12px; 
+      flex-wrap: wrap;
     }
     .search-input, .select-input {
       background: rgba(18, 26, 38, 0.85); 
@@ -103,7 +99,15 @@
       font-size: 14px;
       backdrop-filter: blur(8px);
     }
-    .search-input { flex: 1; min-width: 200px; }
+    /* 搜尋框寬度適當縮短，兼顧手機與電腦版 */
+    .search-input { 
+      flex: 1 1 240px; 
+      max-width: 400px; 
+    }
+    .select-input {
+      flex: 0 0 130px;
+      cursor: pointer;
+    }
     .search-input:focus, .select-input:focus { outline: none; border-color: #00f0ff; box-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
 
     /* 譜面卡片網格 */
@@ -123,6 +127,16 @@
       transform: translateY(-6px); 
       border-color: #00f0ff; 
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.35); 
+    }
+
+    /* 譜師名稱單行超出省略 */
+    .chart-designer-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+      display: inline-block;
+      vertical-align: bottom;
     }
 
     /* 難度標籤動態色彩控制 */
@@ -178,8 +192,22 @@
     </header>
 
     <main style="max-width: 1000px; margin: 0 auto;">
+      <!-- 🌟 優化後的搜尋與篩選區塊 -->
       <div class="filter-bar">
         <input type="text" id="search-input" class="search-input" placeholder="搜尋曲名、曲師或譜師...">
+        
+        <!-- 新增：等級選單 (13 ~ 15) -->
+        <select id="level-select" class="select-input">
+          <option value="ALL">全部等級</option>
+          <option value="13">13</option>
+          <option value="13+">13+</option>
+          <option value="14">14</option>
+          <option value="14+">14+</option>
+          <option value="15">15</option>
+          <option value="15+">15+</option>
+        </select>
+
+        <!-- 原有：難度分類選單 -->
         <select id="diff-select" class="select-input">
           <option value="ALL">全部難度</option>
           <option value="Master">Master</option>
@@ -226,75 +254,56 @@
   </div>
 
   <script>
-   const rawSongs = [
-    {
-      id: "melodiniq",
-      title: "Melodiniq",
-      artist: "onoken a.k.a. owl＊tree",
-      bpm: 193,
-      folder: "chart/melodiniq/",
-      zipName: "melodiniq.zip",
-      difficulties: [
-        { 
-          difficulty: "Master", 
-          level: "14+", 
-          designer: "digitalgoorve & RL",  // 🌟 這張譜的譜師
-          youtubeUrl: "https://www.youtube.com/embed/-ETn7R8KcjA" 
-        }
-      ]
-    },
-    {
-      id: "spooky_badball",
-      title: "SPOOKY BADBALL",
-      artist: "打打だいす",
-      bpm: 197,
-      folder: "chart/SPOOKY BADBALL/",
-      zipName: "SPOOKY BADBALL.zip",
-      difficulties: [
-        { 
-          difficulty: "Master", 
-          level: "14", 
-          designer: "RL",                // 🌟 Master 的譜師
-          youtubeUrl: "https://www.youtube.com/embed/MMQ3PgfuKRY" 
-        },
-        { 
-          difficulty: "Re:Master", 
-          level: "14+", 
-          designer: "digitalgoorve",     // 🌟 Re:Master 的譜師 (不同創作者)
-          youtubeUrl: "https://www.youtube.com/embed/u0qnuCc2Vho" 
-        }
-      ]
-    },
+    // 原始歌曲資料庫
+    const rawSongs = [
       {
-      id: "MEGAMIX",
-      title: "MEGAMIX",
-      artist: "Plum",
-      bpm: 120,
-      folder: "chart/Plum MEGAMIX/",
-      zipName: "Plum MEGAMIX.zip",
-      difficulties: [
-        { 
-          difficulty: "Master", 
-          level: "14+", 
-          designer: "digitalgoorve & RL & ナシ & BubbleCandy & HotIceCream & Horace",  // 🌟 這張譜的譜師
-          youtubeUrl: "https://www.youtube.com/embed/Gx2vBTSZLL4" 
-        }
-      ]
-    },
-  ];
+        id: "melodiniq",
+        title: "Melodiniq",
+        artist: "onoken a.k.a. owl＊tree",
+        bpm: 193,
+        folder: "chart/melodiniq/",
+        zipName: "melodiniq.zip",
+        difficulties: [
+          { difficulty: "Master", level: "14+", designer: "digitalgoorve & RL", youtubeUrl: "https://www.youtube.com/embed/-ETn7R8KcjA" }
+        ]
+      },
+      {
+        id: "spooky_badball",
+        title: "SPOOKY BADBALL",
+        artist: "打打だいす",
+        bpm: 197,
+        folder: "chart/SPOOKY BADBALL/",
+        zipName: "SPOOKY BADBALL.zip",
+        difficulties: [
+          { difficulty: "Master", level: "14", designer: "RL", youtubeUrl: "https://www.youtube.com/embed/MMQ3PgfuKRY" },
+          { difficulty: "Re:Master", level: "14+", designer: "digitalgoorve", youtubeUrl: "https://www.youtube.com/embed/u0qnuCc2Vho" }
+        ]
+      },
+      {
+        id: "megamix",
+        title: "MEGAMIX",
+        artist: "Plum",
+        bpm: 120,
+        folder: "chart/Plum MEGAMIX/",
+        zipName: "Plum MEGAMIX.zip",
+        difficulties: [
+          { difficulty: "Master", level: "14+", designer: "digitalgoorve & RL & ナシ & BubbleCandy & HotIceCream & Horace", youtubeUrl: "https://www.youtube.com/embed/Gx2vBTSZLL4" }
+        ]
+      }
+    ];
 
-  // 2. 自動展開成獨立卡片陣列（完全相容網頁顯示與點擊）
-  const charts = rawSongs.flatMap(song => 
-    song.difficulties.map((diff, index) => ({
-      id: `${song.id}_${diff.difficulty.toLowerCase().replace(/[^a-z0-9]/g, '')}_${index}`,
-      title: song.title,
-      artist: song.artist,
-      bpm: song.bpm,
-      folder: song.folder,
-      zipName: song.zipName,
-      ...diff
-    }))
-  );
+    // 自動展開陣列
+    const charts = rawSongs.flatMap(song => 
+      song.difficulties.map((diff, index) => ({
+        id: `${song.id}_${diff.difficulty.toLowerCase().replace(/[^a-z0-9]/g, '')}_${index}`,
+        title: song.title,
+        artist: song.artist,
+        bpm: song.bpm,
+        folder: song.folder,
+        zipName: song.zipName,
+        ...diff
+      }))
+    );
 
     let currentChart = null;
 
@@ -309,6 +318,7 @@
     function renderCharts() {
       const chartGrid = document.getElementById("chart-grid");
       const searchInput = document.getElementById("search-input")?.value.toLowerCase() || "";
+      const levelSelect = document.getElementById("level-select")?.value || "ALL";
       const diffSelect = document.getElementById("diff-select")?.value || "ALL";
       const resultCount = document.getElementById("result-count");
       const statTotal = document.getElementById("stat-total");
@@ -317,12 +327,16 @@
       if (!chartGrid) return;
       chartGrid.innerHTML = "";
 
+      // 🌟 雙重連動篩選邏輯 (搜尋文字 + 等級 + 難度)
       const filtered = charts.filter(chart => {
         const matchesSearch = chart.title.toLowerCase().includes(searchInput) ||
                               chart.artist.toLowerCase().includes(searchInput) ||
                               chart.designer.toLowerCase().includes(searchInput);
+        
+        const matchesLevel = (levelSelect === "ALL") || (chart.level === levelSelect);
         const matchesDiff = (diffSelect === "ALL") || (chart.difficulty.toLowerCase() === diffSelect.toLowerCase());
-        return matchesSearch && matchesDiff;
+        
+        return matchesSearch && matchesLevel && matchesDiff;
       });
 
       if (resultCount) resultCount.textContent = String(filtered.length).padStart(2, '0');
@@ -422,6 +436,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("search-input")?.addEventListener("input", renderCharts);
+      document.getElementById("level-select")?.addEventListener("change", renderCharts);
       document.getElementById("diff-select")?.addEventListener("change", renderCharts);
       renderCharts();
     });
