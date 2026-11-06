@@ -6,7 +6,6 @@
   <title>MAI ARCHIVE｜自製譜面庫</title>
   <style>
     * { box-sizing: border-box; }
-    CSS
     /* 卡片底部的文字溢出處理 */
     .chart-designer-text {
       white-space: nowrap;
@@ -355,7 +354,7 @@
             <p style="margin: 0 0 12px; font-size: 13px; color: #8995a6;">${chart.artist}</p>
             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #8592a3; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
               <span>BPM: ${chart.bpm}</span>
-              <span>譜師: ${chart.designer}</span>
+              <span class="chart-designer-text">譜師: ${chart.designer}</span>
             </div>
           </div>
         `;
