@@ -7,35 +7,65 @@
   <style>
     * { box-sizing: border-box; }
     
-    /* maimai 主題背景：融入經典八邊形與霓虹框體元素 */
+    /* 1. maimai 主題背景：科技深色網格 + 霓虹漸層 */
     body { 
-      background-color: #0b0e14; 
+      background-color: #080b10; 
       background-image: 
-        radial-gradient(circle at 50% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 50% 80%, rgba(187, 115, 255, 0.06) 0%, transparent 50%),
-        polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        radial-gradient(circle at 50% 30%, rgba(0, 240, 255, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 50% 80%, rgba(255, 0, 128, 0.08) 0%, transparent 60%),
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
       background-attachment: fixed;
       color: #fff; 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
       margin: 0; 
       padding: 30px 20px; 
       position: relative;
+      overflow-x: hidden;
     }
 
-    /* 裝飾性 maimai 八邊形背景線條 */
+    /* 2. 動態 maimai 圓環（外光環旋轉動畫） */
     body::before {
       content: "";
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 650px;
-      height: 650px;
-      border: 2px solid rgba(0, 240, 255, 0.04);
+      width: 680px;
+      height: 680px;
+      border: 2px dashed rgba(0, 240, 255, 0.12);
       border-radius: 50%;
       pointer-events: none;
-      box-shadow: 0 0 50px rgba(0, 240, 255, 0.02), inset 0 0 50px rgba(0, 240, 255, 0.02);
       z-index: -1;
+      animation: rotateRing 40s linear infinite;
+    }
+
+    /* 3. 動態內光環（逆向旋轉粉色霓虹） */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 520px;
+      height: 520px;
+      border: 1px solid rgba(255, 0, 128, 0.15);
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 60px rgba(255, 0, 128, 0.05), inset 0 0 60px rgba(0, 240, 255, 0.05);
+      z-index: -1;
+      animation: rotateRingReverse 30s linear infinite;
+    }
+
+    @keyframes rotateRing {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes rotateRingReverse {
+      from { transform: translate(-50%, -50%) rotate(360deg); }
+      to { transform: translate(-50%, -50%) rotate(0deg); }
     }
     
     header { 
@@ -47,9 +77,9 @@
     h1 { 
       color: #00f0ff; 
       margin: 0 0 8px; 
-      font-size: 28px; 
+      font-size: 30px; 
       letter-spacing: 2px; 
-      text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
     }
     p.subtitle { color: #8995a6; margin: 0; font-size: 14px; }
 
@@ -58,45 +88,47 @@
       max-width: 1000px; margin: 0 auto 25px; display: flex; gap: 12px; flex-wrap: wrap;
     }
     .search-input, .select-input {
-      background: rgba(21, 30, 42, 0.85); 
+      background: rgba(18, 26, 38, 0.85); 
       border: 1px solid rgba(0, 240, 255, 0.3); 
       color: #fff; 
       padding: 10px 14px; 
       border-radius: 6px; 
       font-size: 14px;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(8px);
     }
     .search-input { flex: 1; min-width: 200px; }
-    .search-input:focus, .select-input:focus { outline: none; border-color: #00f0ff; box-shadow: 0 0 8px rgba(0, 240, 255, 0.4); }
+    .search-input:focus, .select-input:focus { outline: none; border-color: #00f0ff; box-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
 
     /* 譜面卡片網格 */
     .chart-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
     }
     .chart-card {
-      background: rgba(21, 30, 42, 0.9); 
-      border: 1px solid rgba(0, 240, 255, 0.3); 
+      background: rgba(18, 26, 38, 0.9); 
+      border: 1px solid rgba(0, 240, 255, 0.25); 
       border-radius: 12px; 
       overflow: hidden;
       cursor: pointer; 
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-      backdrop-filter: blur(6px);
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      backdrop-filter: blur(8px);
     }
     .chart-card:hover { 
-      transform: translateY(-4px); 
+      transform: translateY(-6px); 
       border-color: #00f0ff; 
-      box-shadow: 0 0 18px rgba(0, 240, 255, 0.3); 
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.35); 
     }
 
-    /* 難度標籤動態色彩控制 (Master 紫底 / Re:Master 白底黑字) */
+    /* 難度標籤動態色彩控制 */
     .badge-master {
       background: #bb73ff;
       color: #fff;
+      box-shadow: 0 0 8px rgba(187, 115, 255, 0.4);
     }
     .badge-remaster {
       background: #ffffff;
       color: #000000;
       font-weight: 900;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
     }
     .badge-expert {
       background: #ff5577;
@@ -107,12 +139,12 @@
     .detail-page {
       max-width: 800px; 
       margin: 0 auto; 
-      background: rgba(21, 30, 42, 0.95); 
+      background: rgba(18, 26, 38, 0.95); 
       border: 1px solid #00f0ff; 
       border-radius: 12px; 
       padding: 30px; 
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.25);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.3);
+      backdrop-filter: blur(12px);
     }
     .back-btn {
       display: inline-block; background: transparent; border: 1px solid #8995a6; color: #8995a6; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; text-decoration: none; font-size: 14px;
@@ -124,9 +156,9 @@
       flex: 1; min-width: 200px; text-align: center; padding: 14px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; cursor: pointer; font-size: 15px; transition: 0.2s;
     }
     .btn-watch { background: rgba(0, 240, 255, 0.15); color: #00f0ff; border: 1px solid #00f0ff; }
-    .btn-watch:hover { background: #00f0ff; color: #000; }
+    .btn-watch:hover { background: #00f0ff; color: #000; box-shadow: 0 0 15px rgba(0, 240, 255, 0.5); }
     .btn-download { background: #bb73ff; color: #fff; border: 1px solid #bb73ff; }
-    .btn-download:hover { background: #9d4edd; }
+    .btn-download:hover { background: #9d4edd; box-shadow: 0 0 15px rgba(187, 115, 255, 0.5); }
   </style>
 </head>
 <body>
@@ -228,7 +260,6 @@
 
     let currentChart = null;
 
-    // 取得難度對應的 CSS Class 樣式 (Master 紫 / Re:Master 白底黑字)
     function getBadgeClass(diff) {
       const lower = diff.toLowerCase();
       if (lower.includes("re:master") || lower.includes("remaster")) return "badge-remaster";
