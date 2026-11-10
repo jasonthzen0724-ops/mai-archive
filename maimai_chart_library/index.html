@@ -419,18 +419,22 @@
        }
     ];
 
-    // 自動展開陣列
-    const charts = rawSongs.flatMap(song => 
-      song.difficulties.map((diff, index) => ({
-        id: `${song.id}_${diff.difficulty.toLowerCase().replace(/[^a-z0-9]/g, '')}_${index}`,
-        title: song.title,
-        artist: song.artist,
-        bpm: song.bpm,
-        folder: song.folder,
-        zipName: song.zipName,
-        ...diff
-      }))
-    );
+   // 自動展開陣列（加入過濾草稿/隱藏譜面的邏輯）
+    const charts = rawSongs
+      .filter(song => !song.draft) // 👈 🌟 加上這行！只要標記 draft: true 就會自動過濾隱藏
+      .flatMap(song => 
+        song.difficulties
+          .filter(diff => !diff.draft) // 👈 🌟 如果單一難度標記 draft: true 也會過濾
+          .map((diff, index) => ({
+            id: `${song.id}_${diff.difficulty.toLowerCase().replace(/[^a-z0-9]/g, '')}_${index}`,
+            title: song.title,
+            artist: song.artist,
+            bpm: song.bpm,
+            folder: song.folder,
+            zipName: song.zipName,
+            ...diff
+          }))
+      );
 
     let currentChart = null;
 
